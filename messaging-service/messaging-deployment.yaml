@@ -6,7 +6,7 @@ metadata:
   labels:
     app: messaging-service
 spec:
-  replicas: 3
+  replicas: 4
   selector:
     matchLabels:
       app: messaging-service
