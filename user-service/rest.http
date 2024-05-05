@@ -1,0 +1,6 @@
+### Health probe
+GET http://localhost:8080/healthz
+
+
+### Ready probe
+GET http://localhost/users/healthz
