@@ -1,0 +1,58 @@
+syntax = "proto3";
+
+package server.api;
+option go_package = "github.com/BobrePatre/messenger-homework/notification-service/pkg/api/grpc/golang/server";
+
+import "google/api/annotations.proto";
+import "server/messages.proto";
+import "google/protobuf/empty.proto";
+
+
+service ServerService {
+  rpc CreateServer(CreateServerRequest) returns (CreateServerResponse) {
+    option(google.api.http) = {
+      post: "/create",
+      body: "*"
+    };
+  }
+
+  rpc SearchServer(SearchServerRequest) returns (SearchServerResponse){
+    option(google.api.http) = {
+      get: "/search"
+    };
+  };
+
+  rpc SubsribeServer(SubscribeServerRequest) returns (google.protobuf.Empty) {
+    option(google.api.http) = {
+      post: "/subscribe"
+      body: "*"
+    };
+  };
+
+  rpc UnSubsribeServer(UnSubscribeServerRequest) returns (google.protobuf.Empty) {
+    option(google.api.http) = {
+      post: "/unsubscribe"
+      body: "*"
+    };
+  };
+
+  rpc GetServers(google.protobuf.Empty) returns (GetServersResponse) {
+    option(google.api.http) = {
+      get: "/servers"
+    };
+  };
+
+  rpc CreateInvite(CreateServerRequest) returns (CreateServerResponse) {
+    option(google.api.http) = {
+      post: "/invite",
+      body: "*"
+    };
+  };
+
+  rpc AcceptInvite(AcceptInviteRequest) returns (google.protobuf.Empty) {
+    option(google.api.http) = {
+      post: "/accept-invite",
+      body: "*"
+    };
+  }
+}

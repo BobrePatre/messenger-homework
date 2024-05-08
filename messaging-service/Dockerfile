@@ -9,12 +9,12 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o messaging-service .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o auth-service ./cmd/server
 
 FROM alpine:latest
 WORKDIR /root/
-COPY --from=builder /app/messaging-service .
+COPY --from=builder /app/auth-service .
 
 EXPOSE 8080
 
-CMD ["./messaging-service"]
+CMD ["./auth-service"]

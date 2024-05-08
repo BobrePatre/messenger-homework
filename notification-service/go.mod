@@ -1,4 +1,4 @@
-module user-service
+module notification-service
 
 go 1.22
 

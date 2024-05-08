@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+package server.api;
+option go_package = "github.com/BobrePatre/messenger-homework/notification-service/pkg/api/grpc/golang/server";
+
+
+message CreateServerRequest {
+  string name = 1;
+  string avatar_id = 2;
+  string description = 3;
+}
+
+
+message CreateServerResponse {
+  string server_id = 1;
+}
+
+message SearchServerRequest {
+  string server_name = 1;
+}
+
+message SearchServerResponse {
+  repeated ServerData servers = 1;
+}
+
+message ServerData {
+  string name = 1;
+  string description = 2;
+  int64 sub_count = 3;
+  string avatar_id = 4;
+}
+
+
+message SubscribeServerRequest {
+  string server_id = 1;
+}
+
+message UnSubscribeServerRequest {
+  string server_id = 1;
+}
+
+message GetServersResponse{
+  repeated ServerData servers = 1;
+}
+
+
+message CreateInviteRequest {
+  string server_id = 1;
+}
+
+message CreateInviteResponse {
+  string invite_id = 1;
+}
+
+message AcceptInviteRequest {
+  string invite_id = 1;
+}

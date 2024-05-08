@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package messaging.api;
+option go_package = "github.com/BobrePatre/messenger-homework/notification-service/pkg/api/grpc/golang/messaging";
+
+
+message SendMessageRequest {
+  string chat_id = 1;
+  string body = 2;
+}
+
+message SendMessageResponse {
+  string message_id = 1;
+}

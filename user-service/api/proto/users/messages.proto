@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package users_service.api;
+option go_package = "github.com/BobrePatre/messenger-homework/user-service/pkg/api/grpc/golang/users";
+
+
+enum Status {
+  UNKNOWN = 0;
+  SUCCESS = 1;
+  ERROR = 3;
+}
+
+
+message UserData {
+  string user_id = 1;
+  optional string username = 2;
+  optional string avatarId = 3;
+  optional string bio = 4;
+  repeated Friend friends = 5;
+}
+
+message Friend {
+  string user_id = 1;
+  optional string username = 2;
+  optional string avatarId = 3;
+  optional string bio = 4;
+  FriendStatus friend_status = 5;
+}
+
+enum FriendStatus {
+  PENDING = 0;
+  ACCEPTED = 1;
+  DECLINED = 2;
+}
+
+// Add Frient Zone
+message AddFriendRequest {
+  string id = 1;
+}
+
+message AddFriendResponse {
+  Status status = 1;
+  string requestId = 2;
+}
+
+
+// Remove Friend Request
+// Add Frient Zone
+message RemoveFriendRequest {
+  string id = 1;
+}
+
+message RemoveFriendResponse {
+  Status status = 1;
+}
+
+
+
+// Search Users Zone
+message SearchUserRequst {
+  string username = 1;
+}
+
+message SearchUserResponse {
+  repeated UserData users = 1;
+}
+
+// Friend Request Proccess
+enum FriendRequestAction {
+  UNDEFINED = 0;
+  ACCEPT = 2;
+  DECLINE = 3;
+}
+
+message ProcessFriendRequestRequest {
+  FriendRequestAction action = 1;
+}
+
+message ProccessFriendRequestResponse {
+  Status status = 1;
+}
+
+// Get Friends
+message Friends {
+  repeated Friend friends = 1;
+}

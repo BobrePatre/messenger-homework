@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package users_service.api;
+option go_package = "github.com/BobrePatre/messenger-homework/user-service/pkg/api/grpc/golang/users";
+
+import "google/api/annotations.proto";
+import "users/messages.proto";
+import "google/protobuf/empty.proto";
+
+
+service UsersService {
+  rpc AddFriend(AddFriendRequest) returns (AddFriendResponse) {
+    option (google.api.http) = {
+      post: "/add-friend"
+      body: "*"
+    };
+  };
+
+  rpc SearchUser(SearchUserRequst) returns (SearchUserResponse) {
+    option (google.api.http) = {
+      get: "/search",
+    };
+  };
+
+  rpc RemoveFriend(RemoveFriendRequest) returns (RemoveFriendResponse){
+    option(google.api.http) = {
+      post: "/remove-friend",
+      body: "*"
+    };
+  };
+
+
+  rpc ProcessFriendRequest(ProcessFriendRequestRequest) returns (ProccessFriendRequestResponse) {
+    option(google.api.http) = {
+      post: "/process/friend-request"
+      body: "*"
+    };
+  };
+
+  rpc GetFriends(google.protobuf.Empty) returns (Friends){
+    option(google.api.http) = {
+      get: "/friends",
+    };
+  };
+
+
+}
+

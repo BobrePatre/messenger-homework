@@ -1,0 +1,6 @@
+### Health Probe
+GET http://localhost:8080/healthz
+Content-Type: application/json
+
+### Ready Probe
+GET http://localhost:8080/readyz

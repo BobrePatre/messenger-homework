@@ -1,6 +1,9 @@
 ### Health probe
-GET http://localhost:8082/healthz
+GET http://localhost:8080/healthz
 
 
 ### Ready probe
-GET http://localhost:8082/readyz
+GET http://localhost:8080/readyz
+
+### Send Message
+POST http://localhost:8080/send

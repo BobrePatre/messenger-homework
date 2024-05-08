@@ -1,0 +1,86 @@
+syntax = "proto3";
+
+package auth_service.api;
+option go_package = "github.com/BobrePatre/messenger-homework/auth-service/pkg/api/grpc/golang/auth";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+
+message JwkKey {
+  string keyType = 1;
+  string keyId = 2;
+  string algorithm = 3;
+  string publicKey = 4;
+  string privateKey = 5;
+}
+
+message JwkKeysResponse {
+  repeated JwkKey keys = 1;
+}
+
+message LoginRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Login Request"
+    }
+  };
+  string login = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Login",
+    description: "Логин пользователя",
+  }];
+  string password = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Password",
+    description: "Пароль пользователя"
+  }];
+}
+
+message LoginResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Login Response"
+    }
+  };
+  string token = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Token доступа",
+    description: "Токен, который необходим для доступа к защищенным ресурсам сервера"
+  }];
+}
+
+message RegisterRequest {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Register Request"
+    }
+  };
+
+  string email = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Email"
+  }];
+  string username = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Username"
+  }];
+  string password = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Password"
+  }];
+  string passwordConfirmation = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Password Confirmation",
+    description: "Подтверждение пароля, должен совпадать с полем ввода пароля"
+  }];
+
+}
+
+message RegisterResponse {
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Register Response"
+    }
+  };
+
+  string token = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Token",
+    description: "Токен, который необходим для доступа к защищенным ресурсам сервера"
+  }];
+}
+
+

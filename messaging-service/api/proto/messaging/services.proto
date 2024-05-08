@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package messaging.api;
+option go_package = "github.com/BobrePatre/messenger-homework/notification-service/pkg/api/grpc/golang/messaging";
+
+import "google/api/annotations.proto";
+import "messaging/messages.proto";
+import "google/protobuf/empty.proto";
+
+
+
+service Messaging {
+  rpc SendMessage(SendMessageRequest) returns (SendMessageResponse) {
+    option(google.api.http) = {
+      post: "/send",
+      body: "*"
+    };
+  };
+}
