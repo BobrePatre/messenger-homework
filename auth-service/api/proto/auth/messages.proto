@@ -7,17 +7,6 @@ import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 
-message JwkKey {
-  string keyType = 1;
-  string keyId = 2;
-  string algorithm = 3;
-  string publicKey = 4;
-  string privateKey = 5;
-}
-
-message JwkKeysResponse {
-  repeated JwkKey keys = 1;
-}
 
 message LoginRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
@@ -63,7 +52,7 @@ message RegisterRequest {
   string password = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     title: "Password"
   }];
-  string passwordConfirmation = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+  string password_confirmation = 4 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     title: "Password Confirmation",
     description: "Подтверждение пароля, должен совпадать с полем ввода пароля"
   }];

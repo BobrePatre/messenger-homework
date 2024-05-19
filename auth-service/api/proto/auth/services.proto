@@ -46,14 +46,4 @@ service AuthService {
       description: "Регистрация нового пользователя"
     };
   };
-  rpc JWKS(google.protobuf.Empty) returns (JwkKeysResponse) {
-    option (google.api.http) = {
-      post: "/jwks",
-      body: "*"
-    };
-    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
-      summary: "Jwks"
-      description: "Отдает jwk ключи"
-    };
-  };
 }
