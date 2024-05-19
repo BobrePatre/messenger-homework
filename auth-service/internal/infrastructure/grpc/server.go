@@ -2,6 +2,8 @@ package grpc
 
 import (
 	"context"
+	"fmt"
+	"github.com/ilyakaznacheev/cleanenv"
 	"go.uber.org/fx"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -13,10 +15,21 @@ import (
 
 var grpcServerTag = slog.String("server", "grpc_server")
 
-const (
-	serverPort = "2000"
-	serverHost = "0.0.0.0"
-)
+type Config struct {
+	Host string `json:"host" env-default:"0.0.0.0"`
+	Port int    `json:"port" env-default:"2000"`
+}
+
+func LoadConfig() (*Config, error) {
+	var cfg struct {
+		Config Config `json:"grpc"`
+	}
+	err := cleanenv.ReadConfig("config.json", &cfg)
+	if err != nil {
+		return nil, err
+	}
+	return &cfg.Config, nil
+}
 
 func NewGrpcServer(logger *slog.Logger) *grpc.Server {
 	server := grpc.NewServer(
@@ -35,11 +48,11 @@ func NewGrpcServer(logger *slog.Logger) *grpc.Server {
 	return server
 }
 
-func RunGrpcServer(lc fx.Lifecycle, srv *grpc.Server, logger *slog.Logger) {
+func RunGrpcServer(lc fx.Lifecycle, srv *grpc.Server, logger *slog.Logger, cfg *Config) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			logger.Info("starting server", grpcServerTag, "address", net.JoinHostPort(serverHost, serverPort))
-			listener, err := net.Listen("tcp", net.JoinHostPort(serverHost, serverPort))
+			logger.Info("starting server", grpcServerTag, "address", net.JoinHostPort(cfg.Host, fmt.Sprint(cfg.Port)))
+			listener, err := net.Listen("tcp", net.JoinHostPort(cfg.Host, fmt.Sprint(cfg.Port)))
 			if err != nil {
 				logger.Error("cannot start server", "error", err.Error(), grpcServerTag)
 				return err
