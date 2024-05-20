@@ -1,4 +1,4 @@
-FROM golang:latest AS builder
+FROM golang:1.22.3 AS builder
 
 WORKDIR /app
 
@@ -9,12 +9,12 @@ RUN go mod download
 
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o notification-service .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o service ./cmd/server
 
 FROM alpine:latest
 WORKDIR /root/
-COPY --from=builder /app/notification-service .
+COPY --from=builder /app/service .
 
 EXPOSE 8080
 
-CMD ["./notification-service"]
+CMD ["./service"]

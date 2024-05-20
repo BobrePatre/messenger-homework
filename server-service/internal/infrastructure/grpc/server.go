@@ -16,8 +16,8 @@ import (
 var grpcServerTag = slog.String("server", "grpc_server")
 
 type Config struct {
-	Host string `json:"host" env-default:"0.0.0.0"`
-	Port int    `json:"port" env-default:"50051"`
+	Host string `json:"host" env-default:"0.0.0.0" env:"HOST"`
+	Port int    `json:"port" env-default:"50051" env:"PORT"`
 }
 
 func (cfg *Config) Address() string {
@@ -26,11 +26,14 @@ func (cfg *Config) Address() string {
 
 func LoadConfig() (*Config, error) {
 	var cfg struct {
-		Config Config `json:"grpc"`
+		Config Config `json:"grpc" env-prefix:"GRPC_"`
 	}
 	err := cleanenv.ReadConfig("config.json", &cfg)
 	if err != nil {
-		return nil, err
+		err := cleanenv.ReadEnv(&cfg)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &cfg.Config, nil
 }

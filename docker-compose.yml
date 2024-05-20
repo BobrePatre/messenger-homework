@@ -3,11 +3,30 @@ name: "messenger-compose"
 
 services:
   auth-service:
+    image: quay.io/keycloak/keycloak:24.0.4
     ports:
-      - "8081:8080"
-    build:
-      context: auth-service
-      dockerfile: Dockerfile
+      - "8180:8080"
+    environment:
+      KC_HEALTH_ENABLED: true
+    healthcheck:
+      test: [ "CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'" ]
+      interval: 5s
+      timeout: 1s
+      retries: 10
+      start_period: 1m
+    command:
+      - start-dev
+      - --import-realm
+      - "-Dkeycloak.migration.action=import"
+      - "-Dkeycloak.migration.provider=dir"
+      - "-Dkeycloak.migration.dir=/opt/keycloak/data/import"
+      - "-Dkeycloak.migration.strategy=OVERWRITE_EXISTING"
+    volumes:
+      - ./keycloak/realms:/opt/keycloak/data/import
+    restart: always
+    networks:
+      - auth
+
 
   messaging-service:
     ports:
@@ -15,6 +34,9 @@ services:
     build:
       context: messaging-service
       dockerfile: Dockerfile
+    depends_on:
+      auth-service:
+        condition: service_healthy
 
   server-service:
     ports:
@@ -22,6 +44,9 @@ services:
     build:
       context: server-service
       dockerfile: Dockerfile
+    depends_on:
+      auth-service:
+        condition: service_healthy
 
   user-service:
     ports:
@@ -29,3 +54,19 @@ services:
     build:
       context: user-service
       dockerfile: Dockerfile
+    depends_on:
+      auth-service:
+        condition: service_healthy
+
+  notification-service:
+    ports:
+      - "8085:8080"
+    build:
+      context: notification-service
+      dockerfile: Dockerfile
+    depends_on:
+      auth-service:
+        condition: service_healthy
+
+networks:
+  auth:

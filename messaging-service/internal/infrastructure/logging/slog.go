@@ -12,17 +12,19 @@ const (
 )
 
 type Config struct {
-	MODE string `json:"mode"`
+	MODE string `json:"mode" env:"MODE" default:"dev"`
 }
 
 func LoadConfig() (*Config, error) {
 	var cfg struct {
-		Config Config `json:"logger"`
+		Config Config `json:"logger" env-prefix:"LOGGER_"`
 	}
 	err := cleanenv.ReadConfig("config.json", &cfg)
 	if err != nil {
-
-		return nil, err
+		err := cleanenv.ReadEnv(&cfg)
+		if err != nil {
+			return nil, err
+		}
 	}
 	return &cfg.Config, nil
 }
