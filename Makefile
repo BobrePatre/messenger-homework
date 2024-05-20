@@ -1,4 +1,4 @@
-all: start
+all: start-docker
 
 
 start-docker:

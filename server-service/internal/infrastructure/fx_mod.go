@@ -1,11 +1,11 @@
 package infrastructure
 
 import (
-	"auth-service/internal/infrastructure/grpc"
-	"auth-service/internal/infrastructure/http"
-	"auth-service/internal/infrastructure/logging"
 	"go.uber.org/fx"
 	"log/slog"
+	"server-service/internal/infrastructure/grpc"
+	"server-service/internal/infrastructure/http"
+	"server-service/internal/infrastructure/logging"
 )
 
 var Module = fx.Module(

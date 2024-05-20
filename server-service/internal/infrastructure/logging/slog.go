@@ -15,7 +15,7 @@ type Config struct {
 	MODE string `json:"mode"`
 }
 
-func LoggerConfig() (*Config, error) {
+func LoadConfig() (*Config, error) {
 	var cfg struct {
 		Config Config `json:"logger"`
 	}

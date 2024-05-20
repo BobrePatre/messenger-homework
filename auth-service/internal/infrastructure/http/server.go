@@ -3,7 +3,6 @@ package http
 import (
 	"context"
 	"errors"
-	"fmt"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/ilyakaznacheev/cleanenv"
 	"github.com/labstack/echo/v4"
@@ -12,6 +11,7 @@ import (
 	"log/slog"
 	"net"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -19,12 +19,16 @@ var httpServerTag = slog.String("server", "http_server")
 
 type Config struct {
 	Host string `json:"host" env-default:"0.0.0.0"`
-	Port int    `json:"port" env-default:"2000"`
+	Port int    `json:"port" env-default:"8080"`
+}
+
+func (cfg *Config) Address() string {
+	return net.JoinHostPort(cfg.Host, strconv.Itoa(cfg.Port))
 }
 
 func LoadConfig() (*Config, error) {
 	var cfg struct {
-		Config Config `json:"grpc"`
+		Config Config `json:"http"`
 	}
 	err := cleanenv.ReadConfig("config.json", &cfg)
 	if err != nil {
@@ -77,13 +81,13 @@ func NewHttpServer(logger *slog.Logger, gateway *runtime.ServeMux) *echo.Echo {
 func RunHttpServer(lc fx.Lifecycle, e *echo.Echo, logger *slog.Logger, cfg *Config) {
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
-			listener, err := net.Listen("tcp", net.JoinHostPort(cfg.Host, fmt.Sprint(cfg.Port)))
+			listener, err := net.Listen("tcp", cfg.Address())
 			if err != nil {
 				logger.Error("cannot start server", "error", err.Error(), httpServerTag)
 				return err
 			}
 			e.Listener = listener
-			logger.Info("starting server", httpServerTag, "address", net.JoinHostPort(cfg.Host, fmt.Sprint(cfg.Port)))
+			logger.Info("starting server", httpServerTag, "address", cfg.Address())
 			go func() {
 				err := e.Start("")
 				if err != nil && !errors.Is(err, http.ErrServerClosed) {

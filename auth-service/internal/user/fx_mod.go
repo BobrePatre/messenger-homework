@@ -4,8 +4,9 @@ import (
 	"auth-service/internal/user/delivery"
 	"auth-service/internal/user/repository"
 	"auth-service/internal/user/service/interactors"
-	"go.uber.org/fx"
 	"log/slog"
+
+	"go.uber.org/fx"
 )
 
 var Module = fx.Module(

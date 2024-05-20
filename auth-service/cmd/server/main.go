@@ -3,9 +3,10 @@ package main
 import (
 	"auth-service/internal/infrastructure"
 	"auth-service/internal/user"
+	"log/slog"
+
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
-	"log/slog"
 )
 
 func main() {
