@@ -70,6 +70,11 @@ services:
       - redis
 
   server-service:
+    environment:
+      REDIS_HOST: redis
+      AUTH_CLIENT_ID: ${AUTH_CLIENT}
+      AUTH_JWK_OPTIONS_REFRESH_TIMEOUT: 12h
+      AUTH_JWK_OPTIONS_URI: http://auth:8080/realms/${AUTH_REALM}/protocol/openid-connect/certs
     ports:
       - "8083:8080"
     build:
@@ -81,8 +86,16 @@ services:
       auth:
         condition: service_healthy
     restart: unless-stopped
+    networks:
+      - auth
+      - redis
 
   user-service:
+    environment:
+      REDIS_HOST: redis
+      AUTH_CLIENT_ID: ${AUTH_CLIENT}
+      AUTH_JWK_OPTIONS_REFRESH_TIMEOUT: 12h
+      AUTH_JWK_OPTIONS_URI: http://auth:8080/realms/${AUTH_REALM}/protocol/openid-connect/certs
     ports:
       - "8084:8080"
     build:
@@ -93,6 +106,9 @@ services:
         condition: service_healthy
       auth:
         condition: service_healthy
+    networks:
+      - auth
+      - redis
 
   notification-service:
     ports:
