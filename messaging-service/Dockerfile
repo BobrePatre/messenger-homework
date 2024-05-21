@@ -11,7 +11,8 @@ COPY . .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o service ./cmd/server
 
-FROM alpine:latest
+FROM scratch
+# Alpine - dev only for docker health check, for prod use scratch
 WORKDIR /root/
 COPY --from=builder /app/service .
 

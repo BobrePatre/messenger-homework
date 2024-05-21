@@ -1,7 +1,7 @@
 syntax = "proto3";
 
 package probes.api;
-option go_package = "github.com/BobrePatre/messenger-homework/auth-service/pkg/api/grpc/golang/probes";
+option go_package = "github.com/BobrePatre/messenger-homework/messaging-service/pkg/api/grpc/golang/probes";
 
 
 import "google/api/annotations.proto";
@@ -27,7 +27,7 @@ service ProbeService {
     name: "Probes",
     description: "Эндпоинты для проверки состояния сервиса"
   };
-  rpc Healthz(google.protobuf.Empty) returns (ProbeResponse) {
+  rpc Healthz(google.protobuf.Empty) returns (google.protobuf.Empty) {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Health Probe",
       description: "Проба жизни сервиса"
@@ -36,7 +36,7 @@ service ProbeService {
       get: "/healthz"
     };
   };
-  rpc Readyz(google.protobuf.Empty) returns (ProbeResponse) {
+  rpc Readyz(google.protobuf.Empty) returns (google.protobuf.Empty) {
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       summary: "Ready Probe",
       description: "Проба готовности сервиса начать принятие трафика"
@@ -47,19 +47,3 @@ service ProbeService {
   };
 }
 
-message ProbeResponse {
-  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-    json_schema: {
-      title: "Probe Response"
-    }
-  };
-  Status status = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
-    title: "Статус пробы"
-  }];
-  string message = 2;
-}
-
-enum Status {
-  UNAVAILABLE = 0;
-  OK = 1;
-}

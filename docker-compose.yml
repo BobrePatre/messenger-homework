@@ -1,13 +1,22 @@
 version: "3.8"
 name: "messenger-compose"
 
+
+
+
 services:
-  auth-service:
+  auth:
     image: quay.io/keycloak/keycloak:24.0.4
     ports:
       - "8180:8080"
     environment:
       KC_HEALTH_ENABLED: true
+      KEYCLOAK_ADMIN: bobre
+      KEYCLOAK_ADMIN_PASSWORD: dev-pass
+      KEYCLOAK_LOGLEVEL: debug
+      KC_LOG_FILE_OUTPUT: json
+      KC_LOG_CONSOLE_OUTPUT: json
+      KC_LOG_CONSOLE_COLOR: false
     healthcheck:
       test: [ "CMD-SHELL", "exec 3<>/dev/tcp/localhost/8080 && echo -e 'GET /health/ready HTTP/1.1\\r\\nHost: localhost\\r\\nConnection: close\\r\\n\\r\\n' >&3 && cat <&3 | grep -q '200 OK'" ]
       interval: 5s
@@ -27,6 +36,17 @@ services:
     networks:
       - auth
 
+  redis:
+    image: redis:7.2.5
+    healthcheck:
+      interval: 5s
+      timeout: 1s
+      retries: 10
+      start_period: 1s
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+    networks:
+      - redis
+
 
   messaging-service:
     ports:
@@ -34,9 +54,20 @@ services:
     build:
       context: messaging-service
       dockerfile: Dockerfile
+    environment:
+      REDIS_HOST: redis
+      AUTH_CLIENT_ID: ${AUTH_CLIENT}
+      AUTH_JWK_OPTIONS_REFRESH_TIMEOUT: 12h
+      AUTH_JWK_OPTIONS_URI: http://auth:8080/realms/${AUTH_REALM}/protocol/openid-connect/certs
     depends_on:
-      auth-service:
+      auth:
         condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    networks:
+      - auth
+      - redis
 
   server-service:
     ports:
@@ -45,8 +76,11 @@ services:
       context: server-service
       dockerfile: Dockerfile
     depends_on:
-      auth-service:
+      redis:
         condition: service_healthy
+      auth:
+        condition: service_healthy
+    restart: unless-stopped
 
   user-service:
     ports:
@@ -55,7 +89,9 @@ services:
       context: user-service
       dockerfile: Dockerfile
     depends_on:
-      auth-service:
+      redis:
+        condition: service_healthy
+      auth:
         condition: service_healthy
 
   notification-service:
@@ -65,8 +101,11 @@ services:
       context: notification-service
       dockerfile: Dockerfile
     depends_on:
-      auth-service:
+      redis:
+        condition: service_healthy
+      auth:
         condition: service_healthy
 
 networks:
   auth:
+  redis:

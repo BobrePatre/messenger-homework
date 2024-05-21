@@ -6,16 +6,33 @@ import (
 	"user-service/internal/infrastructure/grpc"
 	"user-service/internal/infrastructure/http"
 	"user-service/internal/infrastructure/logging"
+	"user-service/internal/infrastructure/redis"
+	"user-service/internal/infrastructure/validate"
+	webAuthProvider "user-service/internal/infrastructure/web_auth_provider"
 )
 
 var Module = fx.Module(
 	"Infrastructure",
+
+	// Validator
+	fx.Provide(
+		validate.NewValidate,
+	),
 
 	// Logger
 	fx.Provide(
 		logging.LoadConfig,
 		logging.Logger,
 	),
+
+	// Redis
+	fx.Provide(
+		redis.LoadConfig,
+		redis.NewClient,
+	),
+
+	// Security
+	webAuthProvider.Module,
 
 	// Grpc
 	fx.Provide(

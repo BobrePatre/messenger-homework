@@ -3,6 +3,7 @@ package webAuthProvider
 import (
 	"context"
 	"go.uber.org/fx"
+	"log/slog"
 	"messaging-service/internal/infrastructure/web_auth_provider/keycloak_redis"
 	"messaging-service/internal/infrastructure/web_auth_provider/provider"
 )
@@ -17,11 +18,13 @@ var Module = fx.Module(
 		),
 	),
 	fx.Invoke(
-		func(authProvider provider.WebAuthProvider) {
+		func(authProvider provider.WebAuthProvider, logger *slog.Logger) error {
 			_, err := authProvider.FetchJwkSet(context.Background())
 			if err != nil {
-				return
+				return err
 			}
+			logger.Info("jwks loaded")
+			return nil
 		},
 	),
 )

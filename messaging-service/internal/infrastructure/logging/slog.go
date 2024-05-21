@@ -12,7 +12,7 @@ const (
 )
 
 type Config struct {
-	MODE string `json:"mode" env:"MODE" env-default:"dev"`
+	MODE string `json:"mode" env:"MODE" env-default:"prod"`
 }
 
 func LoadConfig() (*Config, error) {

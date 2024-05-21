@@ -17,7 +17,7 @@ func (p *Provider) VerifyToken(ctx context.Context, tokenString string) (token *
 	token, err = jwt.Parse(tokenString, p.TokenKeyfunc(ctx))
 
 	if err != nil {
-		slog.Error("Failed to parse token", slog.String("err", err.Error()))
+		p.logger.Error("Failed to parse token", slog.String("err", err.Error()))
 		return token, authErrors.InvalidTokenError
 	}
 
@@ -30,7 +30,7 @@ func (p *Provider) TokenKeyfunc(ctx context.Context) jwt.Keyfunc {
 
 		keySet, err := p.FetchJwkSet(ctx)
 		if err != nil {
-			slog.Error("Failed to get jwk set", slog.String("err", err.Error()))
+			p.logger.Error("Failed to get jwk set", slog.String("err", err.Error()))
 			return nil, err
 		}
 
@@ -53,7 +53,7 @@ func (p *Provider) TokenKeyfunc(ctx context.Context) jwt.Keyfunc {
 
 		err = key.Raw(&rawKey)
 		if err != nil {
-			slog.Error("Failed to get raw key", slog.String("err", err.Error()))
+			p.logger.Error("Failed to get raw key", slog.String("err", err.Error()))
 			return rawKey, authErrors.InvalidTokenError
 		}
 

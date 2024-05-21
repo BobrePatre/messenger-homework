@@ -3,12 +3,35 @@ syntax = "proto3";
 package messaging.api;
 option go_package = "github.com/BobrePatre/messenger-homework/notification-service/pkg/api/grpc/golang/messaging";
 
+import "protoc-gen-openapiv2/options/annotations.proto";
 
 message SendMessageRequest {
-  string chat_id = 1;
-  string body = 2;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Send Message Request"
+      description: "Запрос на отправку сообщения"
+    }
+  };
+
+  string chat_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Chat Id"
+    description: "Id целевого чата (личный, сервер ....)"
+  }];
+  string body = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Контент сообщения"
+  }];
 }
 
 message SendMessageResponse {
-  string message_id = 1;
+  option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
+    json_schema: {
+      title: "Send Message Response"
+      description: "Ответ на успешную отправку сообщения"
+    }
+  };
+
+  string message_id = 1 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Id сообщения",
+    description:"Id отправленного сообщения"
+  }];
 }
