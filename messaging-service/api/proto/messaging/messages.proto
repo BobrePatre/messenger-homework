@@ -5,6 +5,12 @@ option go_package = "github.com/BobrePatre/messenger-homework/notification-servi
 
 import "protoc-gen-openapiv2/options/annotations.proto";
 
+enum ChatType {
+  Unknown = 0;
+  Server = 1;
+  Direct = 2;
+}
+
 message SendMessageRequest {
   option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
     json_schema: {
@@ -19,6 +25,10 @@ message SendMessageRequest {
   }];
   string body = 2 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
     title: "Контент сообщения"
+  }];
+  ChatType chat_type = 3 [(grpc.gateway.protoc_gen_openapiv2.options.openapiv2_field) = {
+    title: "Chat Type",
+    description: "Тип чата"
   }];
 }
 

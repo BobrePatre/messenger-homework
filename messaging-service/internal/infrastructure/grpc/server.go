@@ -38,17 +38,10 @@ func LoadConfig() (*Config, error) {
 	return &cfg.Config, nil
 }
 
-func NewGrpcServer(logger *slog.Logger) *grpc.Server {
+func NewGrpcServer(logger *slog.Logger, unaryInterceptors []grpc.UnaryServerInterceptor) *grpc.Server {
+	logger.Info("Initializing gRPC server")
 	server := grpc.NewServer(
-		grpc.ChainUnaryInterceptor(
-			func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (interface{}, error) {
-				logger.Info("New Grpc Req",
-					"Method", info.FullMethod,
-					"Server", info.Server,
-				)
-				return handler(ctx, req)
-			},
-		),
+		grpc.ChainUnaryInterceptor(unaryInterceptors...),
 		grpc.Creds(insecure.NewCredentials()),
 	)
 	reflection.Register(server)

@@ -37,7 +37,11 @@ var Module = fx.Module(
 	// Grpc
 	fx.Provide(
 		grpc.LoadConfig,
-		grpc.NewGrpcServer,
+		grpc.AsUnaryServerInterceptor(grpc.NewLoggingInterceptor),
+		fx.Annotate(
+			grpc.NewGrpcServer,
+			fx.ParamTags("", grpc.UnaryServerInterceptorGroup),
+		),
 	),
 
 	// Http

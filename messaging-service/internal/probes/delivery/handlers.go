@@ -31,6 +31,7 @@ func RegisterHandlers(srv *grpc.Server, srvCfg *infraGrpc.Config, gw *runtime.Se
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
@@ -38,7 +39,7 @@ func (h *Handlers) Healthz(context.Context, *emptypb.Empty) (*emptypb.Empty, err
 	return nil, nil
 }
 
-func (h *Handlers) Readyz(ctx context.Context, req *emptypb.Empty) (*emptypb.Empty, error) {
+func (h *Handlers) Readyz(ctx context.Context, _ *emptypb.Empty) (*emptypb.Empty, error) {
 	md, _ := metadata.FromIncomingContext(ctx)
 	h.logger.Warn("MD", "md", md["authorization"])
 	user, err := h.authProvider.Authorize(ctx, strings.Split(md["authorization"][0], " ")[1], nil)

@@ -21,7 +21,7 @@ type WebAuthProvider interface {
 
 const (
 	JwkKeySet      = "jwk-set"
-	UserDetailsKey = "userDetails"
+	UserDetailsKey = "user-details"
 )
 
 type (

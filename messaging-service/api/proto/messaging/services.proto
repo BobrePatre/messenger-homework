@@ -5,7 +5,6 @@ option go_package = "github.com/BobrePatre/messenger-homework/notification-servi
 
 import "google/api/annotations.proto";
 import "messaging/messages.proto";
-import "google/protobuf/empty.proto";
 
 
 
