@@ -9,6 +9,7 @@ import (
 	"messaging-service/internal/infrastructure/web_auth_provider/provider/models"
 )
 
+// WebAuthProvider TODO: Add registry and registration of rules for routes
 type WebAuthProvider interface {
 	VerifyToken(ctx context.Context, tokenString string) (*jwt.Token, error)
 	TokenKeyfunc(ctx context.Context) jwt.Keyfunc
